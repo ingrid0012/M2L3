@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-public class CharacterScript : MonoBehaviour
+public class CharacterScrip : MonoBehaviour
 {    
     [SerializeField] Rigidbody rb;
     [SerializeField] float speed;
@@ -15,7 +15,9 @@ public class CharacterScript : MonoBehaviour
     float roundScore; //lleva el conteo de puntos o seguimiento de puntos
     bool isGameOver; 
     bool isShield;
-   
+    
+    [SerializeField] AudioClip itemSFX, shieldSFX, obstacleSFX, destroySFX;
+    [SerializeField] AudioSource sound, music;
     
     void Start()
     {      
@@ -66,38 +68,24 @@ public class CharacterScript : MonoBehaviour
     {
         isShield = false;        
     }
-    private void OnCollisionEnter(Collision other) 
+    private void OnCollisionEnter(Collision other)  //AQUIIIII
     {
        if(other.gameObject.CompareTag("Obstaculos"))
         {
             if(isShield)
             {
                 Destroy(other.gameObject);
+                sound.clip = destroySFX; //sonido de destruir obstaculo si tengo el escudo
+                sound.Play(); //reproduce el sonido
             }
             else
             {
                 isGameOver = true;            
                 menu.SetActive(true);
                 anim.SetBool("death", true);
+                sound.clip = obstacleSFX;
+                sound.Play(); //se activa el sonido de choque de colision
+                music.Stop(); //se detiene la musica de fondo
             }            
         }   
     }
-
-      private void OnTriggerEnter(Collider other) 
-    {
-        if(other.CompareTag("Money"))
-        {
-            roundScore += 5;
-            score.text = "Score: " + roundScore.ToString("f1");   
-            Destroy(other.gameObject);
-        }
-
-        if(other.CompareTag("Shield"))  //if del escudo 
-        {
-            isShield = true;
-            Invoke("DeactivateShield", 10f);
-            Destroy(other.gameObject);
-        }
-    }
-   
-}
