@@ -18,6 +18,8 @@ public class CharacterScrip : MonoBehaviour
     
     [SerializeField] AudioClip itemSFX, shieldSFX, obstacleSFX, destroySFX;
     [SerializeField] AudioSource sound, music;
+
+    [SerializeField] GameObject itemVFX, shieldVFX, obstacleVFX; // efecto 
     
     void Start()
     {      
@@ -89,3 +91,22 @@ public class CharacterScrip : MonoBehaviour
             }            
         }   
     }
+
+      private void OnTriggerEnter(Collider other) 
+    {
+        if(other.CompareTag("Money"))
+        {
+            roundScore += 5;
+            score.text = "Score: " + roundScore.ToString("f1");   
+            Destroy(other.gameObject);
+        }
+
+        if(other.CompareTag("Shield"))  //if del escudo 
+        {
+            isShield = true;
+            Invoke("DeactivateShield", 10f);
+            Destroy(other.gameObject);
+        }
+    }
+   
+}
